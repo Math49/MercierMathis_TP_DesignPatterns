@@ -91,3 +91,12 @@ Implémentation concrète contenant :
 - Notifications
 - Systèmes d’alertes
 - Applications temps réel
+
+---
+
+## 🔧 Commande à exécuter pour l'exemple
+
+```batch
+javac Observer/src/*.java
+java Observer/src/Main
+```
