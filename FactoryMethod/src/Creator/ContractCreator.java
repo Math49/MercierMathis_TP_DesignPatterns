@@ -11,4 +11,3 @@ public abstract class ContractCreator {
         System.out.println(contract.getSummary());
     }
 }
-
