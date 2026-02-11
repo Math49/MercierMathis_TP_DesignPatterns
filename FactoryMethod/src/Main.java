@@ -1,19 +1,19 @@
 package FactoryMethod.src;
 
-import FactoryMethod.src.Creator.ContractGenerator;
-import FactoryMethod.src.Creator.LeaseContractGenerator;
-import FactoryMethod.src.Creator.SaleContractGenerator;
+import FactoryMethod.src.Creator.ContractCreator;
+import FactoryMethod.src.Creator.LeaseContractCreator;
+import FactoryMethod.src.Creator.SaleContractCreator;
 
 public class Main {
 
     public static void main(String[] args) {
 
-        ContractGenerator leaseGenerator = new LeaseContractGenerator();
+        ContractCreator leaseGenerator = new LeaseContractCreator();
         leaseGenerator.generate("Camille Martin");
 
         System.out.println("------------------");
 
-        ContractGenerator saleGenerator = new SaleContractGenerator();
+        ContractCreator saleGenerator = new SaleContractCreator();
         saleGenerator.generate("Nadia Benali");
     }
 }

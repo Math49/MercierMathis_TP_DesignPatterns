@@ -1,7 +1,7 @@
 package FactoryMethod.src.Creator;
 import FactoryMethod.src.Product.Contract;
 
-public abstract class ContractGenerator {
+public abstract class ContractCreator {
 
     protected abstract Contract createContract(String clientName);
 

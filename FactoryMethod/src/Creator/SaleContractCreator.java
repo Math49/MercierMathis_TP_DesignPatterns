@@ -1,12 +1,12 @@
 package FactoryMethod.src.Creator;
 
 import FactoryMethod.src.Product.Contract;
-import FactoryMethod.src.Product.LeaseContract;
+import FactoryMethod.src.Product.SaleContract;
 
-public class LeaseContractGenerator extends ContractGenerator {
+public class SaleContractCreator extends ContractCreator {
 
     @Override
     protected Contract createContract(String clientName) {
-        return new LeaseContract(clientName);
+        return new SaleContract(clientName);
     }
 }
