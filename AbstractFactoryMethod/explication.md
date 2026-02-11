@@ -90,7 +90,7 @@ Implémentations concrètes produisant des familles compatibles.
 - Lorsqu’un système doit fonctionner avec plusieurs configurations complètes.
 - Lorsqu’on veut isoler totalement la création.
 - Lorsqu’on veut garantir la cohérence entre objets créés ensemble.
-- 
+
 ---
 
 ## 🔧 Commande à exécuter pour l'exemple
