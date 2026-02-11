@@ -1,9 +1,5 @@
 # Factory Method
 
-Il s’agit d’un design pattern de **création** dont l’objectif est de déléguer l’instanciation d’objets à des sous-classes, plutôt que de créer directement les objets avec l’opérateur `new` dans le code métier.
-
----
-
 ## 🎯 Problème qu’il résout
 
 Dans une application orientée objet, il est fréquent qu’une classe ait besoin de créer des objets.
