@@ -10,6 +10,7 @@ public class Main {
         // Ajout d'options (decorators)
         contract = new FurnishedOption(contract);
         contract = new ParkingOption(contract);
+        contract = new GardenOption(contract);
 
         System.out.println(contract.getText());
         System.out.println("Prix mensuel: " + contract.getMonthlyPrice() + " €");
