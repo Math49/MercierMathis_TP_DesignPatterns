@@ -1,86 +1,88 @@
 # Adapter
 
 ## 🎯 Problème qu’il résout
+Quand on veut utiliser une classe existante (souvent une librairie externe) mais que son interface ne correspond pas
+à ce que notre application attend, on se retrouve avec :
+- du code client rempli de conversions / bricolage,
+- une dépendance directe à la lib externe partout,
+- une difficulté à changer de prestataire plus tard.
 
-Dans une application, il arrive souvent qu’on doive utiliser une classe existante :
-
-- provenant d’une bibliothèque externe
-- d’un ancien système
-- d’un module legacy
-- d’un service tiers
-
-Le problème apparaît lorsque son interface ne correspond pas à celle attendue par notre système.
-
-On ne peut pas :
-- modifier la classe existante
-- casser l’architecture actuelle
-- adapter tout le système à cette nouvelle interface
-
-L’Adapter permet de rendre deux interfaces compatibles sans modifier leur code.
-
----
+Exemple agence immo :
+Notre application veut appeler `PaiementService.payer(...)`.
+Mais un prestataire externe expose une API différente (ex : `StripeApi.charge(...)`).
 
 ## 🧠 Principe de fonctionnement
+Adapter crée une classe “pont” qui :
+- implémente l’interface attendue par notre application (`PaiementService`),
+- traduit l’appel vers l’API existante (`StripeApi`),
+- convertit les données si nécessaire (montant, devise, format…).
 
-Le client travaille avec une interface cible.
-L’Adapter implémente cette interface cible et encapsule l’objet incompatible.
+Le client ne connaît que l’interface `PaiementService`, pas Stripe.
 
-Lorsque le client appelle une méthode :
-- l’Adapter reçoit l’appel
-- il le transforme
-- il appelle la méthode correspondante de l’objet adapté
-
----
-
-## 🏗 Structure
-
-### 1️⃣ Target
-Interface attendue par le client.
-
-### 2️⃣ Adaptee
-Classe existante incompatible.
-
-### 3️⃣ Adapter
-Classe qui :
-- implémente Target
-- contient une instance de Adaptee
-- traduit les appels
-
----
-
-## 🔁 Fonctionnement
-
-Client → Target (interface)  
-Adapter → implémente Target  
-Adapter → appelle Adaptee  
-
-Le client ne sait pas qu’il utilise un adaptateur.
-
----
+## 🏗 Structure (rôles des classes)
+- **Target** : `PaiementService` (interface attendue par l’app)
+- **Adaptee** : `StripeApi` (classe existante incompatible)
+- **Adapter** : `StripePaiementAdapter` (traduit Target -> Adaptee)
+- **Client** : `EncaissementService` / `Main`
 
 ## 📈 Avantages
-
-- Réutilisation de code existant
-- Faible couplage
-- Respect du principe Open/Closed
-- Pas besoin de modifier le code legacy
-
----
+- Découple ton code métier de la librairie externe.
+- Permet de remplacer Stripe par un autre prestataire sans réécrire tout le projet.
+- Centralise la conversion et la logique d’intégration.
 
 ## ⚠️ Inconvénients
+- Ajoute une couche et des classes supplémentaires.
+- Si l’API externe change souvent, l’adapter doit être maintenu.
 
-- Ajoute une couche supplémentaire
-- Peut complexifier la compréhension
-- Ne corrige pas les problèmes de conception du système existant
+## 🧩 Cas d’usage réel possible
+- Paiement (Stripe, PayPal…)
+- Géolocalisation (Google Maps, Mapbox…)
+- Stockage (S3, Drive…)
+- Envoi mail/SMS (SendGrid, Twilio…)
 
----
+## Structure
+```mermaid
+classDiagram
+    class PaiementService {
+      <<interface>>
+      +PaymentResult payer(String clientId, double montant, String devise)
+    }
 
-## 🧩 Quand l’utiliser ?
+    class StripeApi {
+      +StripeReceipt charge(int cents, String currency, String customerRef)
+    }
 
-- Intégration d’un système externe
-- Migration progressive d’un ancien système
-- Compatibilité entre deux modules
-- API incompatible avec l’architecture actuelle
+    class StripePaiementAdapter {
+      -StripeApi stripe
+      +StripePaiementAdapter(StripeApi)
+      +PaymentResult payer(String,double,String)
+    }
+
+    class EncaissementService {
+      -PaiementService paiement
+      +EncaissementService(PaiementService)
+      +void encaisserReservation(String,double)
+    }
+
+    PaiementService <|.. StripePaiementAdapter
+    StripePaiementAdapter --> StripeApi : adapte
+    EncaissementService --> PaiementService : utilise
+```
+
+## Séquence
+```mermaid
+sequenceDiagram
+    participant Client as EncaissementService
+    participant Target as PaiementService
+    participant Adapter as StripePaiementAdapter
+    participant Adaptee as StripeApi
+
+    Client->>Target: payer(clientId, montant, devise)
+    Target->>Adapter: payer(...)
+    Adapter->>Adaptee: charge(cents, currency, customerRef)
+    Adaptee-->>Adapter: StripeReceipt
+    Adapter-->>Client: PaymentResult
+```
 
 ---
 
