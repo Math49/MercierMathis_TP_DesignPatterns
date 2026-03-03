@@ -63,3 +63,12 @@ Un **Invoker** (déclencheur) reçoit des Command et les exécute sans connaîtr
 - Files de tâches / jobs (exécuter plus tard)
 - Historique et annulation (undo/redo)
 - Transactions simplifiées via “commandes de compensation”
+
+---
+
+## 🔧 Commande à exécuter pour l'exemple
+
+```batch
+javac Command/src/*.java
+java Command/src/Main
+```
