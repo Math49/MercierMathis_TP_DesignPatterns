@@ -1,23 +1,23 @@
 package AbstractFactoryMethod.src;
 
-import AbstractFactoryMethod.src.Factories.ContractFactory;
-import AbstractFactoryMethod.src.Factories.FranceContractFactory;
-import AbstractFactoryMethod.src.Factories.SpainContractFactory;
-import AbstractFactoryMethod.src.Product.Contract;
-import AbstractFactoryMethod.src.Product.LegalClause;
+import AbstractFactoryMethod.src.factories.BelgiqueFactory;
+import AbstractFactoryMethod.src.factories.FranceFactory;
+import AbstractFactoryMethod.src.factories.PaysFactory;
+import AbstractFactoryMethod.src.services.DossierLocationService;
 
 public class Main {
-
     public static void main(String[] args) {
+        String locataire = "Mathis Mercier";
+        String bien = "T3 - 18 rue des Lilas";
+        double loyer = 950.0;
 
-        // Choix de la factory (ex: selon pays configuré)
-        ContractFactory factory = new FranceContractFactory();
-        // ContractFactory factory = new SpainContractFactory();
+        PaysFactory factoryFR = new FranceFactory();
+        PaysFactory factoryBE = new BelgiqueFactory();
 
-        Contract contract = factory.createContract();
-        LegalClause clause = factory.createLegalClause();
+        System.out.println("=== DOSSIER FRANCE ===");
+        new DossierLocationService(factoryFR).imprimerDossier(locataire, bien, loyer);
 
-        System.out.println(contract.getContractType());
-        System.out.println(clause.getClauseText());
+        System.out.println("\n=== DOSSIER BELGIQUE ===");
+        new DossierLocationService(factoryBE).imprimerDossier(locataire, bien, loyer);
     }
 }

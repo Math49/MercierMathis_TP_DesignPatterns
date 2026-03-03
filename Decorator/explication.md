@@ -57,7 +57,7 @@ On obtient une composition **flexible** et **dynamique**.
 - Construction de textes/documents (formatage, ajout de sections)
 - Middleware / pipeline (traitements successifs)
 - Streams I/O (ex: Java I/O : BufferedInputStream, DataInputStream…)
-- 
+  
 ---
 
 ## 🔧 Commande à exécuter pour l'exemple

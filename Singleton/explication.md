@@ -1,93 +1,78 @@
 # Singleton
 
 ## 🎯 Problème qu’il résout
-
-Dans certaines situations, il est essentiel qu’une classe :
-
-- ne soit instanciée qu’une seule fois
-- fournisse un accès global et contrôlé à cette instance
-
-Exemples typiques :
-- gestion de configuration
-- gestion de logs
-- gestion de connexion à une base de données
-- cache global
-- gestionnaire centralisé
-
-Si on permet plusieurs instanciations :
-- incohérence d’état
-- conflits de configuration
-- consommation inutile de ressources
-- comportement imprévisible
-
-Le Singleton impose donc l’unicité.
-
----
+Dans une application, certaines ressources doivent exister **en un seul exemplaire** (ex : configuration globale).  
+Sans règle claire, on risque :
+- plusieurs objets “config” différents (valeurs incohérentes),
+- du code qui crée la config n’importe où,
+- des comportements différents selon l’ordre d’exécution.
 
 ## 🧠 Principe de fonctionnement
+Le Singleton garantit :
+- **une seule instance** d’une classe,
+- un **point d’accès global** à cette instance.
 
-Le principe repose sur trois éléments :
+L’idée : la classe contrôle elle-même sa création :
+- constructeur **privé** (personne ne peut faire `new`),
+- méthode statique `getInstance()` (retourne toujours la même instance).
 
-1️⃣ Le constructeur est privé  
-→ Empêche l’instanciation externe.
-
-2️⃣ Une variable statique privée contient l’unique instance.
-
-3️⃣ Une méthode publique statique permet d’accéder à l’instance.
-
-L’instance peut être :
-
-- créée immédiatement (eager initialization)
-- créée au premier appel (lazy initialization)
-
----
-
-## 🏗 Structure
-
-Classe Singleton contenant :
-
-- un attribut statique privé : instance
-- un constructeur privé
-- une méthode statique publique : getInstance()
-
----
-
-## 🔁 Fonctionnement
-
-1. Le client appelle getInstance()
-2. Si l’instance n’existe pas, elle est créée
-3. La même instance est retournée à chaque appel
-
-Ainsi, toutes les parties du programme partagent le même objet.
-
----
+## 🏗 Structure (rôles des classes)
+- **Singleton** : la classe qui contient l’unique instance (ici `ConfigAgence`)
+- **Clients** : les classes qui utilisent la config (ici `AnnonceService`, `ContratService`, etc.)
 
 ## 📈 Avantages
-
-- Contrôle strict du nombre d’instances
-- Point d’accès global
-- Centralisation d’un état partagé
-- Économie de ressources
-
----
+- Garantit une configuration unique et cohérente.
+- Accès simple partout dans le code via `getInstance()`.
+- Évite de passer la config en paramètre partout.
 
 ## ⚠️ Inconvénients
+- C’est un **état global** : peut rendre les tests plus difficiles.
+- Peut masquer des dépendances (on ne voit plus qui dépend de quoi).
+- En multi-thread, il faut une implémentation sûre (sinon double création possible).
 
-- Introduit un état global (peut compliquer les tests)
-- Peut violer le principe de responsabilité unique
-- Peut masquer une mauvaise conception
-- Difficile à mocker en tests unitaires
+## 🧩 Cas d’usage réel possible
+- Configuration applicative (nom de l’agence, taux de TVA, devises, chemin d’export PDF…)
+- Journalisation (logger)
+- Cache global
+- Registry/Container (dans certains frameworks)
 
----
+## Structure
+```mermaid
+classDiagram
+    class ConfigAgence {
+      - static ConfigAgence instance
+      - ConfigAgence()
+      + static ConfigAgence getInstance()
+      + String getNomAgence()
+      + double getTauxTVA()
+      + String getDevise()
+    }
 
-## 🧩 Quand l’utiliser ?
+    class AnnonceService {
+      + double calculerPrixTTC(double prixHT)
+    }
 
-Lorsque :
-- Une seule instance est nécessaire
-- Cette instance doit être partagée
-- L’objet représente une ressource unique
+    class ContratService {
+      + String genererEnteteContrat()
+    }
 
----
+    AnnonceService --> ConfigAgence : utilise
+    ContratService --> ConfigAgence : utilise
+```
+
+## Séquence (accès à l’instance)
+```mermaid
+sequenceDiagram
+    participant Client as AnnonceService
+    participant S as ConfigAgence
+
+    Client->>S: getInstance()
+    alt première fois
+        S-->>Client: crée instance puis la retourne
+    else déjà créée
+        S-->>Client: retourne l'instance existante
+    end
+```
 
 ## 🔧 Commande à exécuter pour l'exemple
 

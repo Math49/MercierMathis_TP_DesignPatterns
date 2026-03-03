@@ -1,18 +1,21 @@
 package Singleton.src;
 
+import Singleton.src.services.AnnonceService;
+import Singleton.src.services.ContratService;
+
 public class Main {
-
     public static void main(String[] args) {
+        AnnonceService annonceService = new AnnonceService();
+        ContratService contratService = new ContratService();
 
-        CompanyConfig config1 = CompanyConfig.getInstance();
-        CompanyConfig config2 = CompanyConfig.getInstance();
+        double prixHT = 120000.0;
+        double prixTTC = annonceService.calculerPrixTTC(prixHT);
 
-        config1.setCountry("Espagne");
+        System.out.println("Prix HT : " + prixHT);
+        System.out.println("Prix TTC : " + prixTTC);
+        System.out.println();
 
-        System.out.println("Config1 pays : " + config1.getCountry());
-        System.out.println("Config2 pays : " + config2.getCountry());
-
-        System.out.println("Même instance ? " + (config1 == config2));
+        System.out.println(contratService.genererEnteteContrat());
     }
 }
 
