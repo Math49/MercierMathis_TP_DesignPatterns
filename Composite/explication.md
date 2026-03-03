@@ -1,65 +1,66 @@
 # Composite
 
 ## 🎯 Problème qu’il résout
-Quand on manipule une structure hiérarchique (type arbre), on se retrouve souvent avec :
-- des objets “simples” (feuilles)
-- des objets “conteneurs” (composites) qui contiennent d’autres objets
+Quand on manipule une structure hiérarchique (arbre), on veut traiter :
+- un objet simple
+- un groupe d’objets
 
-Sans Composite, le client doit souvent écrire :
-- des `if` pour savoir si c’est une feuille ou un groupe
-- du code différent selon le type de nœud
-- une logique récursive mélangée au code métier
+de la même manière.
 
-Résultat :
-- code client complexe
-- duplication de logique
-- ajout de nouveaux types de nœuds plus difficile
-
-Composite simplifie tout en donnant une abstraction unique pour la hiérarchie.
-
----
+Sans Composite, on aurait :
+- beaucoup de `instanceof`
+- des traitements différents selon le type
+- un code fragile et peu extensible
 
 ## 🧠 Principe de fonctionnement
-Le pattern repose sur une interface commune appelée **Component**.
+On définit une interface commune (Component).
+Elle est implémentée par :
+- des objets simples (Leaf)
+- des objets composés (Composite)
 
-- Les objets simples (**Leaf**) implémentent directement Component.
-- Les objets composés (**Composite**) implémentent aussi Component, mais délèguent une partie de leur travail à leurs enfants (eux-mêmes des Component).
+Le Composite contient une collection de Component.
+Ainsi, on peut appeler la même méthode sur un objet simple ou un groupe.
 
-Quand le client appelle une opération sur la racine :
-- une Leaf exécute l’opération directement
-- un Composite exécute l’opération en la propageant à ses enfants (souvent récursivement)
-
----
-
-## 🏗 Structure (rôles)
-- **Component** : interface commune des objets de l’arbre (opérations métier)
-- **Leaf** : élément terminal (pas d’enfants)
-- **Composite** : conteneur d’enfants (liste de Component) + délégation/récursion
-- **Client** : ne manipule que des Component
-
----
+## 🏗 Structure (rôles des classes)
+- **Component** : `BienImmobilier`
+- **Leaf** : `Appartement`, `Maison`
+- **Composite** : `EnsembleImmobilier`
+- **Client** : `Main`
 
 ## 📈 Avantages
-- ✅ Le client traite feuilles et composites de manière uniforme
-- ✅ Simplifie le code client (moins de conditions)
-- ✅ Ajout de nouveaux types de nœuds sans casser le client (OCP)
-- ✅ Naturel pour représenter des hiérarchies (arbres)
-
----
+- Uniformise le traitement (objet simple ou groupe).
+- Supprime les `instanceof`.
+- Facilite l’extension (nouveau type de bien).
 
 ## ⚠️ Inconvénients
-- ❌ Peut rendre certaines contraintes plus difficiles (ex: “tel composite ne doit contenir que certains types”)
-- ❌ Si on met add/remove dans Component : plus simple pour le client, mais moins “type-safe”
-- ❌ L’arborescence peut devenir difficile à déboguer si elle est très grande
+- L’interface commune peut contenir des méthodes non pertinentes pour certaines implémentations.
+- Structure parfois plus complexe que nécessaire.
 
----
+## 🧩 Cas d’usage réel possible
+- Biens immobiliers (appartement, immeuble, portefeuille).
+- Arborescence de fichiers.
+- UI (composant simple / conteneur).
+- Organisation hiérarchique (employé / département).
 
-## 🧩 Cas d’usage réel
-- Arborescence de fichiers/dossiers
-- Menus / sous-menus
-- Organisation (entreprise, équipes)
-- Facturation en lots (bundle d’items)
-- Structure de documents (sections, paragraphes)
+## Mermaid — structure
+```mermaid
+classDiagram
+    class BienImmobilier {
+      <<interface>>
+      +double getValeurTotale()
+      +String getNom()
+    }
+
+    class Appartement
+    class Maison
+    class EnsembleImmobilier
+
+    BienImmobilier <|.. Appartement
+    BienImmobilier <|.. Maison
+    BienImmobilier <|.. EnsembleImmobilier
+
+    EnsembleImmobilier --> BienImmobilier : contient *
+```
 
 ---
 

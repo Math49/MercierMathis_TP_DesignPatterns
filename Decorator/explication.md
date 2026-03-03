@@ -1,62 +1,89 @@
 # Decorator
 
 ## 🎯 Problème qu’il résout
-Dans une application, on veut souvent enrichir un objet avec des options.
+Quand on veut ajouter des fonctionnalités/options à un objet, on a souvent 2 mauvaises solutions :
+- créer plein de sous-classes (explosion combinatoire : Standard, Standard+Premium, Standard+Urgent, etc.)
+- mettre des `if` partout avec des flags (code dur à lire et à maintenir)
 
-Une première approche classique consiste à créer une sous-classe par combinaison :
-- ClasseDeBase
-- ClasseDeBaseOptionA
-- ClasseDeBaseOptionB
-- ClasseDeBaseOptionAOptionB
-- etc.
-
-Problèmes :
-- explosion du nombre de classes (une classe par combinaison)
-- rigidité : changer une option implique de toucher à l’héritage
-- impossible (ou très lourd) de composer les comportements à l’exécution
-
-Decorator évite cela en permettant d’**empiler** des fonctionnalités par composition.
-
----
+Decorator permet d’ajouter des responsabilités **dynamiquement** en empilant des “couches”.
 
 ## 🧠 Principe de fonctionnement
+On part d’un composant de base (ex : commission standard).
+Puis on l’enveloppe avec des décorateurs (ex : option urgence, option premium, partenariat…).
 
-- le client manipule toujours une même abstraction
-- l’objet décoré peut être “enveloppé” par un ou plusieurs décorateurs
-- chaque décorateur ajoute un comportement avant/après (ou en plus) du comportement existant
+Chaque décorateur :
+- implémente la même interface que le composant,
+- contient une référence vers un autre composant,
+- ajoute sa propre logique avant/après l’appel.
 
-On obtient une composition **flexible** et **dynamique**.
-
----
-
-## 🏗 Structure
-- **Component** : interface commune (contrat des méthodes)
-- **ConcreteComponent** : objet de base
-- **Decorator** : classe abstraite qui contient une référence vers un Component
-- **ConcreteDecorators** : décorateurs concrets ajoutant chacun une responsabilité
-
----
+## 🏗 Structure (rôles des classes)
+- **Component** : `CommissionCalculator`
+- **ConcreteComponent** : `BaseCommission`
+- **Decorator** : `CommissionDecorator` (abstrait, contient un `CommissionCalculator`)
+- **ConcreteDecorators** : `UrgenceDecorator`, `PremiumDecorator`, `PartenaireDecorator`
+- **Client** : `Main` (compose les options comme des couches)
 
 ## 📈 Avantages
-- ✅ Ajout de fonctionnalités sans modifier la classe (OCP)
-- ✅ Évite l’explosion des sous-classes
-- ✅ Composition flexible (ordre des décorateurs possible)
-- ✅ Chaque option reste isolée et testable
-
----
+- Ajout d’options sans modifier la classe de base.
+- Combine librement les options (empilement).
+- Évite l’explosion de sous-classes.
 
 ## ⚠️ Inconvénients
-- ❌ Multiplie le nombre d’objets (empilement)
-- ❌ Peut rendre le débogage moins évident (chaîne de décorateurs)
-- ❌ L’ordre des décorateurs peut impacter le résultat (à documenter)
-
----
+- Beaucoup de petits objets (plus de classes).
+- Debug parfois moins évident (chaîne de décorateurs).
+- L’ordre des décorations peut changer le résultat (il faut le maîtriser).
 
 ## 🧩 Cas d’usage réel possible
-- Ajout d’options sur un produit/service (sans multiplier les classes)
-- Construction de textes/documents (formatage, ajout de sections)
-- Middleware / pipeline (traitements successifs)
-- Streams I/O (ex: Java I/O : BufferedInputStream, DataInputStream…)
+- Calcul de prix : options, réductions, taxes, suppléments.
+- I/O : buffers, compression, chiffrement (ex : streams Java).
+- UI : ajout de bordures, scroll, ombres, etc.
+
+## Mermaid — structure
+```mermaid
+classDiagram
+    class CommissionCalculator {
+      <<interface>>
+      +double calculer(double prixVente)
+      +String description()
+    }
+
+    class BaseCommission
+    CommissionCalculator <|.. BaseCommission
+
+    class CommissionDecorator {
+      <<abstract>>
+      -CommissionCalculator inner
+      +CommissionDecorator(CommissionCalculator)
+      +double calculer(double)
+      +String description()
+    }
+    CommissionCalculator <|.. CommissionDecorator
+    CommissionDecorator --> CommissionCalculator : wrap
+
+    class PremiumDecorator
+    class UrgenceDecorator
+    class PartenaireDecorator
+
+    CommissionDecorator <|-- PremiumDecorator
+    CommissionDecorator <|-- UrgenceDecorator
+    CommissionDecorator <|-- PartenaireDecorator
+```
+
+## Séquence (empilement)
+```mermaid
+sequenceDiagram
+    participant Client as Main
+    participant D1 as PremiumDecorator
+    participant D2 as UrgenceDecorator
+    participant Base as BaseCommission
+
+    Client->>D1: calculer(prix)
+    D1->>D2: calculer(prix)
+    D2->>Base: calculer(prix)
+    Base-->>D2: base
+    D2-->>D1: base+urgence
+    D1-->>Client: total
+```
   
 ---
 

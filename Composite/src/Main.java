@@ -1,27 +1,27 @@
 package Composite.src;
 
-public class Main {
+import Composite.src.component.BienImmobilier;
+import Composite.src.composite.EnsembleImmobilier;
+import Composite.src.leaf.Appartement;
+import Composite.src.leaf.Maison;
 
+public class Main {
     public static void main(String[] args) {
 
-        // Feuilles
-        DocumentItem lease = new ContractFile("Contrat de location - APT-742", 12);
-        DocumentItem sale  = new ContractFile("Contrat de vente - HSE-105", 18);
+        BienImmobilier appart1 = new Appartement("Studio centre-ville", 120000);
+        BienImmobilier appart2 = new Appartement("T2 proche gare", 180000);
+        BienImmobilier maison1 = new Maison("Maison campagne", 250000);
 
-        // Dossier principal
-        ContractFolder root = new ContractFolder("Dossier client - Martin");
+        EnsembleImmobilier immeuble = new EnsembleImmobilier("Immeuble A");
+        immeuble.ajouter(appart1);
+        immeuble.ajouter(appart2);
 
-        // Sous-dossier
-        ContractFolder annexes = new ContractFolder("Annexes");
-        annexes.add(new ContractFile("Diagnostic énergétique", 6));
-        annexes.add(new ContractFile("État des lieux", 9));
+        EnsembleImmobilier portefeuille = new EnsembleImmobilier("Portefeuille Investisseur");
+        portefeuille.ajouter(immeuble);
+        portefeuille.ajouter(maison1);
 
-        root.add(lease);
-        root.add(sale);
-        root.add(annexes);
-
-        // Traitement uniforme : on appelle sur la racine
-        root.print("");
-        System.out.println("Total pages = " + root.getTotalPages());
+        System.out.println("Valeur appartement seul : " + appart1.getValeurTotale());
+        System.out.println("Valeur immeuble : " + immeuble.getValeurTotale());
+        System.out.println("Valeur portefeuille complet : " + portefeuille.getValeurTotale());
     }
 }

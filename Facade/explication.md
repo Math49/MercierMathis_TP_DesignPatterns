@@ -1,65 +1,94 @@
-# Facade (Façade)
+# Facade
 
 ## 🎯 Problème qu’il résout
+Quand un système est composé de plusieurs services/classes et nécessite un ordre d’appels précis,
+le code client devient vite :
+- long et répétitif,
+- difficile à lire,
+- fragile (si l’ordre change, on casse le flux),
+- très couplé à plein de classes internes.
 
-Dans un système réel, il arrive souvent que le client (le code qui veut faire une action) doive interagir avec **plusieurs classes** d’un sous-système, chacune avec sa propre interface :
-
-- initialiser des objets
-- appeler des méthodes dans un certain ordre
-- gérer des dépendances
-- connaître les détails internes
-
-Cela rend le code client :
-- difficile à écrire
-- difficile à lire
-- fortement couplé aux détails d’implémentation
-
-Facade résout ce problème en **fournissant une interface plus simple**, regroupant les interactions courantes du sous-système et en exposant seulement ce que le client a besoin de connaître. :contentReference[oaicite:1]{index=1}
-
----
+Facade propose une interface simple qui masque cette complexité.
 
 ## 🧠 Principe de fonctionnement
+On crée une classe Façade qui :
+- possède/instancie les sous-systèmes (services internes),
+- orchestre les appels dans le bon ordre,
+- expose au client une méthode simple (ex : `creerDossierVente(...)`).
 
-Le pattern introduit une **classe Façade** qui :
+Le client n’utilise plus directement les services internes.
 
-- encapsule un ensemble de classes complexes (le sous-système)
-- offre des **méthodes simplifiées**
-- déléguent les appels au sous-système dans le bon ordre ou avec la bonne logique
-
-Le client n’interagit qu’avec la Façade ; il n’a jamais besoin d’appeler directement les classes internes.
-
----
-
-## 🏗 Structure (rôles)
-
-- **Facade** : classe offrant une interface simple  
-- **Subsystem classes** : classes internes avec des interfaces détaillées  
-- **Client** : utilise la façade plutôt que le système complexe
-
----
+## 🏗 Structure (rôles des classes)
+- **Facade** : `DossierVenteFacade`
+- **Sous-systèmes** : `ProprietaireService`, `BienService`, `CommissionService`, `ContratService`, `NotificationService`, `ArchiveService`
+- **Client** : `Main` (ou un contrôleur)
 
 ## 📈 Avantages
-
-- ✅ Masque la complexité interne  
-- ✅ Réduit les dépendances du client au sous-système  
-- ✅ Facilite la lecture et la maintenance  
-- ✅ Permet de modifier le sous-système sans impacter le client  
-
----
+- Simplifie l’utilisation d’un système complexe.
+- Réduit le couplage (le client dépend surtout de la façade).
+- Centralise un workflow métier (ordre d’exécution).
 
 ## ⚠️ Inconvénients
+- Peut devenir une “classe fourre-tout” si on y met trop de responsabilités.
+- Risque de masquer des besoins de découpage plus propre si mal utilisée.
 
-- ❌ Ne réduit pas réellement la complexité interne  
-- ❌ Peut devenir une “classe passe-plat” si trop de méthodes y sont mises  
+## 🧩 Cas d’usage réel possible
+- Création d’un dossier de vente ou de location (vérifs + calculs + documents + notifications).
+- Onboarding d’un nouveau client (création compte + email + CRM).
+- Publication d’annonce (validation + SEO + publication + marketing).
 
----
+## Mermaid — structure
+```mermaid
+classDiagram
+    class DossierVenteFacade {
+      -ProprietaireService proprietaireService
+      -BienService bienService
+      -CommissionService commissionService
+      -ContratService contratService
+      -NotificationService notificationService
+      -ArchiveService archiveService
+      +DossierVente creerDossierVente(String proprietaireId, String bienId, double prixVente)
+    }
 
-## 🧩 Cas d’usage
+    class ProprietaireService
+    class BienService
+    class CommissionService
+    class ContratService
+    class NotificationService
+    class ArchiveService
 
-- Simplifier l’accès à une API ou une bibliothèque complexe  
-- Regrouper plusieurs services dans une seule interface  
-- Fourni un point d’entrée unique dans un sous-système interne  
-- Masquer des dépendances et réduire le couplage
+    DossierVenteFacade --> ProprietaireService
+    DossierVenteFacade --> BienService
+    DossierVenteFacade --> CommissionService
+    DossierVenteFacade --> ContratService
+    DossierVenteFacade --> NotificationService
+    DossierVenteFacade --> ArchiveService
+
+    class Main
+    Main --> DossierVenteFacade : utilise
+```
+
+## Séquence
+```mermaid
+sequenceDiagram
+    participant Client as Main
+    participant F as DossierVenteFacade
+    participant P as ProprietaireService
+    participant B as BienService
+    participant C as CommissionService
+    participant K as ContratService
+    participant N as NotificationService
+    participant A as ArchiveService
+
+    Client->>F: creerDossierVente(...)
+    F->>P: verifierProprietaire(...)
+    F->>B: verifierBien(...)
+    F->>C: calculerCommission(...)
+    F->>K: genererContrat(...)
+    F->>N: envoyerEmail(...)
+    F->>A: archiver(...)
+    F-->>Client: DossierVente
+```
 
 ---
 
