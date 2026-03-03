@@ -1,18 +1,22 @@
 package Command.src;
 
+import Command.src.commands.ModifierPrixCommand;
+import Command.src.invoker.CommandManager;
+import Command.src.model.Annonce;
+
 public class Main {
 
     public static void main(String[] args) {
 
-        ContractService service = new ContractService();
-        CommandQueue invoker = new CommandQueue();
+        Annonce annonce = new Annonce("T3 centre-ville", 250000);
+        CommandManager manager = new CommandManager();
 
-        Command create = new CreateContractCommand(service, "LEASE-APT-742");
-        Command cancel = new CancelContractCommand(service, "LEASE-APT-742");
+        System.out.println("Prix initial : " + annonce.getPrix());
 
-        invoker.run(create);
-        invoker.run(cancel);
+        manager.executeCommand(new ModifierPrixCommand(annonce, 240000));
+        System.out.println("Après modification : " + annonce.getPrix());
 
-        System.out.println("Historique (nb commandes exécutées) = " + invoker.historySize());
+        manager.undoLast();
+        System.out.println("Après undo : " + annonce.getPrix());
     }
 }

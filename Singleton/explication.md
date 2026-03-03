@@ -74,6 +74,8 @@ sequenceDiagram
     end
 ```
 
+---
+
 ## 🔧 Commande à exécuter pour l'exemple
 
 ```batch

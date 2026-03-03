@@ -1,18 +1,21 @@
 package Observer.src;
 
+import Observer.src.model.Annonce;
+import Observer.src.observers.CRMService;
+import Observer.src.observers.NotificationService;
+import Observer.src.observers.StatistiquesService;
+
 public class Main {
 
     public static void main(String[] args) {
 
-        PropertyListing apartment = new PropertyListing("Appartement centre-ville", 250000);
+        Annonce annonce = new Annonce("T3 centre-ville", 250000);
 
-        Client client1 = new Client("Camille");
-        Client client2 = new Client("Nadia");
+        annonce.attach(new NotificationService());
+        annonce.attach(new CRMService());
+        annonce.attach(new StatistiquesService());
 
-        apartment.attach(client1);
-        apartment.attach(client2);
-
-        System.out.println("Changement de prix...");
-        apartment.setPrice(240000);
+        System.out.println("=== Modification du prix ===");
+        annonce.setPrix(240000);
     }
 }
