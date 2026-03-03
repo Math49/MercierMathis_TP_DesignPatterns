@@ -1,14 +1,5 @@
 # Command (Commande)
 
-## 📌 Nom du pattern
-**Command** (Commande)
-
-Pattern comportemental qui encapsule une demande (une action à exécuter) dans un objet.  
-Cet objet contient tout ce qu’il faut pour exécuter l’action : la cible (récepteur) et les paramètres nécessaires.  
-Cela permet de déclencher, stocker, mettre en file, journaliser ou annuler des actions de manière propre. 
-
----
-
 ## 🎯 Problème qu’il résout
 Dans un système, on a souvent un objet qui déclenche des actions (ex: bouton, menu, scheduler, API),
 et d’autres objets qui savent réellement faire le travail (ex: services métier).

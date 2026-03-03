@@ -1,13 +1,5 @@
 # Builder (Monteur)
 
-## 📌 Nom du pattern
-**Builder** (ou *Monteur*).
-
-Pattern de création qui permet de construire des objets complexes **étape par étape**.  
-Il permet aussi de produire **différentes variantes** d’un même objet en réutilisant un processus de construction. :contentReference[oaicite:1]{index=1}
-
----
-
 ## 🎯 Problème qu’il résout
 Certains objets sont "complexes" à instancier :
 - beaucoup de champs (dont beaucoup optionnels)

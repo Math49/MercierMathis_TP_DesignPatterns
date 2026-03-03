@@ -1,16 +1,5 @@
 # Composite
 
-## 📌 Nom du pattern
-**Composite**
-
-Pattern structurel qui permet de composer des objets en **arborescence** (relation partie-tout) et de traiter de la même façon :
-- un objet simple (feuille)
-- un groupe d’objets (composite)
-
-Autrement dit : le client utilise une interface commune et n’a pas besoin de distinguer “un élément” et “un ensemble d’éléments”.  
-
----
-
 ## 🎯 Problème qu’il résout
 Quand on manipule une structure hiérarchique (type arbre), on se retrouve souvent avec :
 - des objets “simples” (feuilles)
